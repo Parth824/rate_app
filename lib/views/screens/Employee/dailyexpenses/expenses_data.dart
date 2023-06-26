@@ -1,5 +1,9 @@
+import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:rentapp/views/screens/Employee/dailyexpenses/daliy_expenses.dart';
+
+import '../../../../size_config.dart';
 
 class ExpensesData extends StatefulWidget {
   const ExpensesData({super.key});
@@ -9,78 +13,167 @@ class ExpensesData extends StatefulWidget {
 }
 
 class _ExpensesDataState extends State<ExpensesData> {
-    @override
-  Widget build(BuildContext context) {
-    // List data = ModalRoute.of(context)!.settings.arguments as List;
+  int? number;
+  int? amount;
 
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        title: Text("Expenses Data",
-            style: TextStyle(
-                letterSpacing: 2, fontSize: 23, fontWeight: FontWeight.w400)),
-        centerTitle: true,
+  String dropdownvalue = 'Travel';
+
+  var items = [
+    'Travel',
+    'Food',
+    'Nozzle Check',
+    'Other',
+  ];
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  DateTime? _selectedDate;
+
+  TextEditingController _textEditingController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Center(
+        child: Text(
+          "Add Expense",
+          style: TextStyle(),
+        ),
       ),
-      body:
-      (AllData.isNotEmpty) ?
-            ListView.builder(
-              itemCount: AllData.length,
-              itemBuilder: (context, i) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 15,top: 15,right: 15),
-                  child: Container(
-                    // width: 200,
-                    // height: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.white,
-                    ),
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Date :  ",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w600),),
-                              SizedBox(height: 3,),
-                              Text("Category :  ",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w600)),
-                              SizedBox(height: 3,),
-                              Text("Contact :  ",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w600)),
-                              SizedBox(height: 3,),
-                              Text("Amount :  ",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("${AllData[i]['date']}",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w400,color: Colors.grey[700]),),
-                              SizedBox(height: 3,),
-                              Text("${AllData[i]['category']}",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w400,color: Colors.grey[700])),
-                              SizedBox(height: 3,),
-                              Text("${AllData[i]['number']}",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w400,color: Colors.grey[700])),
-                              SizedBox(height: 3,),
-                              Text("${AllData[i]['amount']}",style: TextStyle(letterSpacing: 1,fontSize: 20,fontWeight: FontWeight.w400,color: Colors.grey[700])),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+      content: Form(
+        key: formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _textEditingController,
+                onTap: () async {
+                  DateTime? newSelectedDate = await showDatePicker(
+                    context: context,
+                    initialDate:
+                        _selectedDate != null ? _selectedDate! : DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2040),
+                  );
+
+                  if (newSelectedDate != null) {
+                    _selectedDate = newSelectedDate;
+                    _textEditingController
+                      ..text = DateFormat.yMMMd().format(_selectedDate!)
+                      ..selection = TextSelection.fromPosition(TextPosition(
+                          offset: _textEditingController.text.length,
+                          affinity: TextAffinity.upstream));
+                  }
+                },
+                focusNode: AlwaysDisabledFocusNode(),
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(SizeConfig.screenHeight * 0.03),
                   ),
-                );
-              })
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                  "assets/images/no-data.png",
-                  height: 90,
-            ),
-                  Text("No data found..."),
-                ],
-              )),
+                  hintText: "Date",
+                  hintStyle: TextStyle(),
+                  labelText: "Date",
+                  labelStyle: TextStyle(),
+                ),
+              ),
+              SizedBox(
+                height: getProportionateScreenHeight(10),
+              ),
+              CustomSearchableDropDown(
+                items: items,
+                label: dropdownvalue,
+                labelStyle: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 18),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius:
+                      BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+                      border: Border.all(
+                    
+                  ),
+                ),
+                dropDownMenuItems: items?.map(
+                      (e) {
+                        return e;
+                      },
+                    )?.toList() ??
+                    [],
+                dropdownBackgroundColor: Colors.white,
+                suffixIcon: Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.blue,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    dropdownvalue = value;
+                  });
+                  // if(value!=null)
+                  // {
+                  //   selected = value['class'].toString();
+                  // }
+                  // else{
+                  //   selected=null;
+                  // }
+                },
+              ),
+              SizedBox(
+                height: getProportionateScreenHeight(10),
+              ),
+              buildTextFormFieldEmployeeExpense(
+                  text: "Mobile number", textInputAction: TextInputAction.next),
+              SizedBox(
+                height: getProportionateScreenHeight(10),
+              ),
+              buildTextFormFieldEmployeeExpense(
+                  text: "Amount", textInputAction: TextInputAction.next),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        OutlinedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(
+            "Cancel",
+            style: TextStyle(),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(
+            "Add",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
     );
   }
+
+  TextFormField buildTextFormFieldEmployeeExpense(
+      {required TextInputAction textInputAction, required String text}) {
+    return TextFormField(
+      textInputAction: textInputAction,
+      decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+        ),
+        hintText: text,
+        hintStyle: TextStyle(),
+        labelText: text,
+        labelStyle: TextStyle(),
+      ),
+    );
+  }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }

@@ -14,16 +14,15 @@ class BankAccountPage extends StatefulWidget {
 
 class _BankAccountPageState extends State<BankAccountPage> {
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.all(SizeConfig.screenWidth/100),
+            padding: EdgeInsets.all(SizeConfig.screenWidth / 100),
           ),
           ...Invoice4.map(
             (e) => Container(
@@ -72,9 +71,11 @@ class _BankAccountPageState extends State<BankAccountPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Add_Bank_Account()),
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Add_Bank_Account();
+            },
           );
         },
         icon: const Icon(Icons.add),
