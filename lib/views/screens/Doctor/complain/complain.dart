@@ -1,7 +1,6 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:rentapp/size_config.dart';
 
 class ComplainPage extends StatefulWidget {
@@ -195,7 +194,7 @@ class _ComplainPageState extends State<ComplainPage> {
   }
 
   _getNozelimage() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
+    XFile? pickedFile = await ImagePicker().pickImage(
       source: ImageSource.gallery,
       maxWidth: 1800,
       maxHeight: 1800,
@@ -208,8 +207,8 @@ class _ComplainPageState extends State<ComplainPage> {
   }
 
   _getFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
+    XFile? pickedFile = await ImagePicker().pickImage(source: 
+        ImageSource.gallery,
       maxWidth: 1800,
       maxHeight: 1800,
     );

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rentapp/components/social_circle.dart';
 import 'package:rentapp/constants.dart';
 import 'package:rentapp/size_config.dart';
 
 import '../../../../components/default_button.dart';
 import '../sign_up/sign_up_screen.dart';
+import 'select_category_controller.dart';
 
 class SelectCategory extends StatefulWidget {
   const SelectCategory({super.key});
@@ -16,6 +18,8 @@ class SelectCategory extends StatefulWidget {
 }
 
 class _SelectCategoryState extends State<SelectCategory> {
+
+  Select_Cat_Controller select_cat_controller = Get.put(Select_Cat_Controller());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -41,25 +45,31 @@ class _SelectCategoryState extends State<SelectCategory> {
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: getProportionateScreenWidth(10),
-                            ),
-                            padding: EdgeInsets.all(
-                              getProportionateScreenWidth(20),
-                            ),
-                            height: getProportionateScreenHeight(120),
-                            width: getProportionateScreenWidth(120),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade100,
-                              border: Border.all(color: Colors.black),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image.asset(
-                              'assets/images/doctor.png',
-                              fit: BoxFit.fill,
-                            ),
+                          onTap: () {
+                            select_cat_controller.updateIsDoctor(k: true);
+                          },
+                          child: Obx(
+                            () {
+                              return Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: getProportionateScreenWidth(10),
+                                ),
+                                padding: EdgeInsets.all(
+                                  getProportionateScreenWidth(20),
+                                ),
+                                height: getProportionateScreenHeight(120),
+                                width: getProportionateScreenWidth(120),
+                                decoration: BoxDecoration(
+                                  color: (select_cat_controller.isDoctor.value)? Colors.blue.shade100:Colors.grey.shade100,
+                                  border: Border.all(color: (select_cat_controller.isDoctor.value)?Colors.black:Colors.transparent),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Image.asset(
+                                  'assets/images/doctor.png',
+                                  fit: BoxFit.fill,
+                                ),
+                              );
+                            }
                           ),
                         ),
                         SizedBox(
@@ -77,24 +87,31 @@ class _SelectCategoryState extends State<SelectCategory> {
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: getProportionateScreenWidth(10),
-                            ),
-                            padding: EdgeInsets.all(
-                              getProportionateScreenWidth(20),
-                            ),
-                            height: getProportionateScreenHeight(120),
-                            width: getProportionateScreenWidth(120),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image.asset(
-                              'assets/images/employee.png',
-                              fit: BoxFit.fill,
-                            ),
+                          onTap: () {
+                            select_cat_controller.updateIsDoctor(k: false);
+                          },
+                          child: Obx(
+                             () {
+                              return Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: getProportionateScreenWidth(10),
+                                ),
+                                padding: EdgeInsets.all(
+                                  getProportionateScreenWidth(20),
+                                ),
+                                height: getProportionateScreenHeight(120),
+                                width: getProportionateScreenWidth(120),
+                                decoration: BoxDecoration(
+                                  color: (select_cat_controller.isDoctor.value == false)? Colors.blue.shade100:Colors.grey.shade100,
+                                  border: Border.all(color: (select_cat_controller.isDoctor.value == false)?Colors.black:Colors.transparent),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Image.asset(
+                                  'assets/images/employee.png',
+                                  fit: BoxFit.fill,
+                                ),
+                              );
+                            }
                           ),
                         ),
                         SizedBox(

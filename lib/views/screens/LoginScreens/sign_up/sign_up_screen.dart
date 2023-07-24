@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../components/custom_suffix.dart';
 import '../../../../components/default_button.dart';
@@ -7,6 +8,8 @@ import '../../../../components/social_circle.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 import '../complete_profile/complete_profile_screen.dart';
+import '../select_category/select_category_controller.dart';
+import 'sing_up_controller.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -20,7 +23,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  String? email;
+  String email = "";
   String? password;
   String? confirmPassword;
 
@@ -40,15 +43,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
   }
 
+  Select_Cat_Controller select_cat_controller =
+      Get.find<Select_Cat_Controller>();
+  SingUpController singUpController = Get.put(SingUpController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(elevation: 0,
+        appBar: AppBar(
+          elevation: 0,
           backgroundColor: Colors.white,
           title: Text("Sign Up"),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios,color: Colors.black,),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -95,12 +105,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         DefaultButton(
                             text: "Continue",
-                            press: () {
+                            press: () async {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.pushNamed(
-                                  context,
-                                  CompleteProfileScreen.routeName,
-                                );
+                                _formKey.currentState!.save();
+                                await singUpController.getDoctor(
+                                    isDoctor:
+                                        select_cat_controller.isDoctor.value,
+                                    Email: email);
+                                if (singUpController.data.isNotEmpty) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("Have User"),
+                                    backgroundColor: Colors.red,
+                                    behavior: SnackBarBehavior.floating,
+                                  ));
+                                } else {
+                                  singUpController.E_P.value = {
+                                    'Email': email,
+                                    'Password': password
+                                  };
+                                  Navigator.pushNamed(
+                                    context,
+                                    CompleteProfileScreen.routeName,
+                                  );
+                                }
                               }
                             }),
                       ],
@@ -178,8 +206,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       textInputAction: TextInputAction.done,
       obscureText: true,
       decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.always,        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(getProportionateScreenHeight(25))),
-
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
         labelText: "Confirm Password",
         hintText: "Re-enter your password",
         suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/Lock.svg"),
@@ -244,8 +274,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       obscureText: true,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        labelText: "Password",        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(getProportionateScreenHeight(25))),
-
+        labelText: "Password",
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
         hintText: "Enter your password",
         suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/Lock.svg"),
       ),
@@ -255,7 +287,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextFormField buildEmailFormField() {
     return TextFormField(
       onSaved: (val) {
-        email = val;
+        email = val!;
       },
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(kEmailNullError)) {
@@ -288,8 +320,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.always,        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(getProportionateScreenHeight(25))),
-
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
         labelText: "Email",
         hintText: "Enter your email",
         suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/Mail.svg"),

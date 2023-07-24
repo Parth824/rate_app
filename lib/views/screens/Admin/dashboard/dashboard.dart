@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../globals.dart';
 import '../../../../size_config.dart';
+import 'dashboard_controller.dart';
+import 'package:get/get.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -13,6 +15,19 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  DashBoardController dashBoardController = Get.put(DashBoardController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
+
+  getdata() async {
+    await dashBoardController.getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,26 +55,31 @@ class _DashboardPageState extends State<DashboardPage> {
                   height: SizeConfig.screenHeight / 4.7,
                   width: SizeConfig.screenWidth / 2.20,
                   child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "536",
-                          style: TextStyle(
-                              color: Color(0xff223263),
-                              fontWeight: FontWeight.bold,
-                              fontSize: getProportionateScreenHeight(50)),
-                        ),
-                        Text(
-                          "TOTAL \nDOCTOR",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: getProportionateScreenHeight(18)),
-                        ),
-                      ],
+                    child: Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          (dashBoardController.dashBoard.value.isNotEmpty)
+                              ? Text(
+                                  "${dashBoardController.dashBoard[0]['Total_Doctor']}",
+                                  style: TextStyle(
+                                      color: Color(0xff223263),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          getProportionateScreenHeight(50)),
+                                )
+                              : CircularProgressIndicator(),
+                          Text(
+                            "TOTAL \nDOCTOR",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: getProportionateScreenHeight(18)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

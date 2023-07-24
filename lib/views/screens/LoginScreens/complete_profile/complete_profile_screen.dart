@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import '../../../../size_config.dart';
@@ -7,6 +9,10 @@ import '../../../../components/form_error.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 import '../otp/otp_screen.dart';
+import 'package:get/get.dart';
+
+import '../select_category/select_category_controller.dart';
+import '../sign_up/sing_up_controller.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({Key? key}) : super(key: key);
@@ -20,6 +26,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final List<String> errors = [];
 
+  String? Hospital;
   String? firstName;
   String? lastName;
   String? phoneNumber;
@@ -41,14 +48,21 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     }
   }
 
+  SingUpController singUpController = Get.put(SingUpController());
+  Select_Cat_Controller select_cat_controller =
+      Get.find<Select_Cat_Controller>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(elevation: 0,
+      appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.white,
         title: Text("Complete Profile"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,color: Colors.black,),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -84,6 +98,15 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     physics: BouncingScrollPhysics(),
                     child: Column(
                       children: [
+                        Visibility(
+                            visible: select_cat_controller.isDoctor.value,
+                            child: buildHospitalFormField()),
+                        Visibility(
+                          visible: select_cat_controller.isDoctor.value,
+                          child: SizedBox(
+                            height: getProportionateScreenHeight(30),
+                          ),
+                        ),
                         buildFirstNameFormField(),
                         SizedBox(
                           height: getProportionateScreenHeight(30),
@@ -103,10 +126,52 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                         ),
                         DefaultButton(
                             text: "Continue",
-                            press: () {
+                            press: () async {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.pushNamed(
-                                    context, OtpScreen.routeName);
+                                _formKey.currentState!.save();
+                                if (select_cat_controller.isDoctor.value) {
+                                  singUpController.E_P.addAll({
+                                    'Hospital_Name': Hospital,
+                                    'First_Name': firstName,
+                                    'Last_Name': lastName,
+                                    'Phone_Number': phoneNumber,
+                                    'Address': address,
+                                    'Paper_Size': '',
+                                    'Paper_Price': '0',
+                                  });
+                                  // print(singUpController.E_P.value);
+                                  await singUpController.insertData(
+                                      isDoctor:
+                                          select_cat_controller.isDoctor.value,
+                                      k: singUpController.E_P.value);
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    OtpScreen.routeName,
+                                    (route) {
+                                      return false;
+                                    },
+                                  );
+                                } else {
+                                  singUpController.E_P.addAll({
+                                    'First_Name': firstName,
+                                    'Last_Name': lastName,
+                                    'Phone_Number': phoneNumber,
+                                    'Address': address,
+                                    'Salary': '0',
+                                  });
+                                  // print(singUpController.E_P.value);
+                                  await singUpController.insertData(
+                                      isDoctor:
+                                          select_cat_controller.isDoctor.value,
+                                      k: singUpController.E_P.value);
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    OtpScreen.routeName,
+                                    (route) {
+                                      return false;
+                                    },
+                                  );
+                                }
                               }
                             }),
                       ],
@@ -146,7 +211,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       },
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
-        labelText: "Address",        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(getProportionateScreenHeight(25))),
+        labelText: "Address",
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
 
         hintText: "Enter your address",
         // If  you are using latest version of flutter then lable text and hint text shown like this
@@ -177,7 +245,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        labelText: "Phone Number",        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(getProportionateScreenHeight(25))),
+        labelText: "Phone Number",
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
 
         hintText: "Enter your phone number",
         // If  you are using latest version of flutter then lable text and hint text shown like this
@@ -194,7 +265,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: "Last Name",
-        hintText: "Enter your last name",        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(getProportionateScreenHeight(25))),
+        hintText: "Enter your last name",
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
 
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
@@ -222,9 +296,44 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        labelText: "First Name",        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(getProportionateScreenHeight(25))),
+        labelText: "First Name",
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
 
         hintText: "Enter your first name",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSuffixIcon(svgIcon: "assets/icons/User.svg"),
+      ),
+    );
+  }
+
+  TextFormField buildHospitalFormField() {
+    return TextFormField(
+      onSaved: (newValue) => Hospital = newValue,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          removeError(error: kNameNullError);
+        }
+        return null;
+      },
+      validator: (value) {
+        if (value!.isEmpty) {
+          addError(error: kNameNullError);
+          return "";
+        }
+        return null;
+      },
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        labelText: "Hospital Name",
+        enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(getProportionateScreenHeight(25))),
+
+        hintText: "Enter your hospital name",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rentapp/views/screens/Admin/homepage/homepage.dart';
 import 'package:rentapp/views/screens/Employee/homepage/homepage.dart';
 import '../../../../components/custom_suffix.dart';
 import '../../../../components/default_button.dart';
@@ -6,10 +8,14 @@ import '../../../../components/form_error.dart';
 import '../../../../components/signup_text.dart';
 import '../../../../components/social_circle.dart';
 import '../../../../constants.dart';
+import '../../../../main.dart';
 import '../../../../size_config.dart';
 import '../../Doctor/homepage/homepage.dart';
 import '../forgot_password/forgot_pass_screen.dart';
 import '../login_success/login_success_screen.dart';
+import '../select_category/select_category_controller.dart';
+import 'sign_in_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SigniInScreen extends StatefulWidget {
   const SigniInScreen({Key? key}) : super(key: key);
@@ -22,11 +28,16 @@ class SigniInScreen extends StatefulWidget {
 class _SigniInScreenState extends State<SigniInScreen> {
   final _formKey = GlobalKey<FormState>();
   final List<String> errors = [];
-
   String? email;
   String? password;
 
   bool remember = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   void addError({String? error}) {
     if (!errors.contains(error))
@@ -45,6 +56,9 @@ class _SigniInScreenState extends State<SigniInScreen> {
   int isDoc = 1;
   int isEmp = 0;
 
+  Select_Cat_Controller select_cat_controller =
+      Get.put(Select_Cat_Controller());
+  SingInController singIpController = Get.put(SingInController());
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -102,11 +116,79 @@ class _SigniInScreenState extends State<SigniInScreen> {
                         ),
                         DefaultButton(
                             text: "Continue",
-                            press: () {
+                            press: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                Navigator.pushNamed(
-                                    context, LoginSuccessScreen.routeName);
+                                if (email == "admin@gmail.com" &&
+                                    password == "Mohit@123456") {
+
+                                    Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          AdminHomePage.routeName,
+                                          (route) {
+                                            return false;
+                                          },
+                                        );
+
+                                } else {
+                                  await singIpController.getDoctor(
+                                      isDoctor:
+                                          select_cat_controller.isDoctor.value,
+                                      Email: email!);
+                                  if (singIpController.data.isNotEmpty) {
+                                    if (password ==
+                                        singIpController.data['Password']) {
+                                      if (select_cat_controller
+                                          .isDoctor.value) {
+                                        await sharedPreferences.setBool(
+                                            "isLogin", true);
+                                        await sharedPreferences.setBool(
+                                            "isDoctor",
+                                            select_cat_controller
+                                                .isDoctor.value);
+                                        await sharedPreferences.setString("Id",
+                                            singIpController.data['D_Id']);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          DoctorHomePage.routeName,
+                                          (route) {
+                                            return false;
+                                          },
+                                        );
+                                      } else {
+                                        await sharedPreferences.setBool(
+                                            "isLogin", true);
+                                        await sharedPreferences.setBool(
+                                            "isDoctor",
+                                            select_cat_controller
+                                                .isDoctor.value);
+                                        await sharedPreferences.setString("Id",
+                                            singIpController.data['E_Id']);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          EmployeeHomePage.routeName,
+                                          (route) {
+                                            return false;
+                                          },
+                                        );
+                                      }
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text("PassWord InVaild.."),
+                                        backgroundColor: Colors.red,
+                                        behavior: SnackBarBehavior.floating,
+                                      ));
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text("Sign Up User First.."),
+                                      backgroundColor: Colors.red,
+                                      behavior: SnackBarBehavior.floating,
+                                    ));
+                                  }
+                                }
                               }
                             }),
                       ],
@@ -118,30 +200,27 @@ class _SigniInScreenState extends State<SigniInScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      SocialCircle(
-                          icon: 'assets/images/doctor.png',
-                          press: () {
-                            Navigator.pushNamed(context, DoctorHomePage.routeName);
-                            setState(() {
-                              isDoc == 1;
-                              isEmp == 0;
-                            });
-                          },
-                          color: (isDoc == 1)
-                              ? Colors.blue.shade100
-                              : Colors.grey.shade100),
-                      SocialCircle(
-                          icon: 'assets/images/employee.png',
-                          press: () {
-                            Navigator.pushNamed(context, EmployeeHomePage.routeName);
-                            setState(() {
-                              isDoc == 0;
-                              isEmp == 1;
-                            });
-                          },
-                          color: (isEmp == 1)
-                              ? Colors.blue.shade100
-                              : Colors.grey.shade100),
+                      Obx(
+                        () => SocialCircle(
+                            icon: 'assets/images/doctor.png',
+                            press: () {
+                              select_cat_controller.updateIsDoctor(k: true);
+                            },
+                            color: (select_cat_controller.isDoctor.value)
+                                ? Colors.blue.shade100
+                                : Colors.grey.shade100),
+                      ),
+                      Obx(
+                        () => SocialCircle(
+                            icon: 'assets/images/employee.png',
+                            press: () {
+                              select_cat_controller.updateIsDoctor(k: false);
+                            },
+                            color:
+                                (select_cat_controller.isDoctor.value == false)
+                                    ? Colors.blue.shade100
+                                    : Colors.grey.shade100),
+                      ),
                     ],
                   ),
                   SizedBox(
