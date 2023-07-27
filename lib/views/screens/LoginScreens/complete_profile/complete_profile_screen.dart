@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 
 import '../select_category/select_category_controller.dart';
 import '../sign_up/sing_up_controller.dart';
+import '../signin/cir_controller.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({Key? key}) : super(key: key);
@@ -49,6 +50,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   }
 
   SingUpController singUpController = Get.put(SingUpController());
+  CirController cirController = Get.put(CirController());
   Select_Cat_Controller select_cat_controller =
       Get.find<Select_Cat_Controller>();
   @override
@@ -124,11 +126,23 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                         SizedBox(
                           height: getProportionateScreenHeight(40),
                         ),
-                        DefaultButton(
-                            text: "Continue",
-                            press: () async {
+                        SizedBox(
+                          width: double.infinity,
+                          height: getProportionateScreenHeight(56),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                              backgroundColor:
+                                  MaterialStateProperty.all(kPrimaryColor),
+                            ),
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
+                                cirController.setLoding(isl: true);
                                 if (select_cat_controller.isDoctor.value) {
                                   singUpController.E_P.addAll({
                                     'Hospital_Name': Hospital,
@@ -172,8 +186,25 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                                     },
                                   );
                                 }
+                                cirController.setLoding(isl: false);
                               }
-                            }),
+                            },
+                            child: Obx(
+                              () => cirController.isloding.value
+                                  ? CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      "Continue",
+                                      style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenWidth(18),
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

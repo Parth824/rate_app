@@ -24,7 +24,7 @@ class _Order_PageState extends State<Order_Page> {
   List ImageData = [
     {
       'title': "Inkjet Printer",
-      'images': "assets/images/printer1.jpeg",
+      'images': "",
     },
     {'title': "Cartoon Printer", 'images': "assets/images/printer2.jpeg"},
     {'title': "Inkjet Printer", 'images': "assets/images/printer3.jpeg"},
@@ -145,7 +145,7 @@ class _Order_PageState extends State<Order_Page> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ClipRRect(
+                          (ImageData[index]['images'] != "" )?ClipRRect(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(
                                   getProportionateScreenHeight(15)),
@@ -158,7 +158,7 @@ class _Order_PageState extends State<Order_Page> {
                               width: double.infinity,
                               fit: BoxFit.cover,
                             ),
-                          ),
+                          ):Container(),
                           SizedBox(
                             height: getProportionateScreenHeight(5),
                           ),

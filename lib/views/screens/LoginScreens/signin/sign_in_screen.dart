@@ -14,6 +14,7 @@ import '../../Doctor/homepage/homepage.dart';
 import '../forgot_password/forgot_pass_screen.dart';
 import '../login_success/login_success_screen.dart';
 import '../select_category/select_category_controller.dart';
+import 'cir_controller.dart';
 import 'sign_in_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,6 +56,7 @@ class _SigniInScreenState extends State<SigniInScreen> {
 
   int isDoc = 1;
   int isEmp = 0;
+  CirController cirController = Get.put(CirController());
 
   Select_Cat_Controller select_cat_controller =
       Get.put(Select_Cat_Controller());
@@ -114,22 +116,34 @@ class _SigniInScreenState extends State<SigniInScreen> {
                         SizedBox(
                           height: getProportionateScreenHeight(20),
                         ),
-                        DefaultButton(
-                            text: "Continue",
-                            press: () async {
+                        SizedBox(
+                          width: double.infinity,
+                          height: getProportionateScreenHeight(56),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                              backgroundColor:
+                                  MaterialStateProperty.all(kPrimaryColor),
+                            ),
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
+                                cirController.setLoding(isl: true);
                                 if (email == "admin@gmail.com" &&
                                     password == "Mohit@123456") {
-
-                                    Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          AdminHomePage.routeName,
-                                          (route) {
-                                            return false;
-                                          },
-                                        );
-
+                                  await sharedPreferences.setBool(
+                                      "isLogin", true);
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    AdminHomePage.routeName,
+                                    (route) {
+                                      return false;
+                                    },
+                                  );
                                 } else {
                                   await singIpController.getDoctor(
                                       isDoctor:
@@ -189,8 +203,23 @@ class _SigniInScreenState extends State<SigniInScreen> {
                                     ));
                                   }
                                 }
+                                cirController.setLoding(isl: false);
                               }
-                            }),
+                            },
+                            child: Obx(
+                              () => cirController.isloding.value
+                                  ? CircularProgressIndicator(color: Colors.white,)
+                                  : Text(
+                                      "Continue",
+                                      style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenWidth(18),
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

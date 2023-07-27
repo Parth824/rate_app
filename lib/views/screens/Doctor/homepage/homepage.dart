@@ -7,8 +7,11 @@ import 'package:rentapp/views/screens/Doctor/order/order_page.dart';
 import 'package:rentapp/views/screens/Doctor/order_received/order_recevied.dart';
 import 'package:rentapp/views/screens/Doctor/payment/payment.dart';
 import 'package:rentapp/views/screens/Doctor/payment_due/payment_due.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../main.dart';
 import '../../../../size_config.dart';
+import '../../LoginScreens/signin/sign_in_screen.dart';
 
 class DoctorHomePage extends StatefulWidget {
   const DoctorHomePage({super.key});
@@ -35,7 +38,13 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
             ),
           ),
           actions: [
-            GestureDetector(onTap: () {}, child: Icon(Icons.logout)),
+            GestureDetector(
+                onTap: () async {
+                  await sharedPreferences.setBool("isLogin", false);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      SigniInScreen.routeName, (route) => false);
+                },
+                child: Icon(Icons.logout)),
             SizedBox(
               width: SizeConfig.screenWidth * 0.04,
             ),
