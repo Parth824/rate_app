@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../globals.dart';
+import '../../../../main.dart';
 import '../../../../size_config.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'payment_due_contorller.dart';
 
 class PaymentDuePage extends StatefulWidget {
   const PaymentDuePage({super.key});
@@ -13,6 +17,21 @@ class PaymentDuePage extends StatefulWidget {
 }
 
 class _PaymentDuePageState extends State<PaymentDuePage> {
+  PaymentDueContoroller paymentDueContoroller =
+      Get.put(PaymentDueContoroller());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    String? k = sharedPreferences.getString("Id");
+    await paymentDueContoroller.getPayment(k: {"Id": k});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,13 +42,15 @@ class _PaymentDuePageState extends State<PaymentDuePage> {
             Navigator.pop(context);
           },
         ),
-        title: const Text("Payment Due",style: TextStyle(color: Colors.white),),
+        title: const Text(
+          "Payment Due",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Container(
         height: SizeConfig.screenHeight,
         width: SizeConfig.screenWidth,
         child: SingleChildScrollView(
-
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -45,91 +66,128 @@ class _PaymentDuePageState extends State<PaymentDuePage> {
                           "    Party Name",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.w500),
+                              fontSize: getProportionateScreenHeight(16),
+                              fontWeight: FontWeight.w500),
                         ),
                       ),
                       Expanded(
                         flex: 3,
                         child: Text(
                           "   Invoice No.",
-                          style: TextStyle(                          color: Colors.black,
-
-                              fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: getProportionateScreenHeight(16),
+                              fontWeight: FontWeight.w500),
                         ),
                       ),
                       Expanded(
                         flex: 2,
                         child: Text(
                           "  Amount",
-                          style: TextStyle(                          color: Colors.black,
-
-                            fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.w500,),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: getProportionateScreenHeight(16),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                       Expanded(
                         flex: 2,
                         child: Text(
                           "  Status",
-                          style: TextStyle(                          color: Colors.black,
-
-                              fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: getProportionateScreenHeight(16),
+                              fontWeight: FontWeight.w500),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Divider(height: 2,thickness: 5,),
-                ...Invoice.map((e) => Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: Colors.red.shade200),
-                      height: SizeConfig.screenHeight * 0.05,
-                      width: SizeConfig.screenWidth,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                              flex: 3,
-                              child: Center(
-                                child: Text(
-                                  e["name"],
-                                  style: TextStyle(                          color: Colors.black,
-
-                                      fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),
+                Divider(
+                  height: 2,
+                  thickness: 5,
+                ),
+                Obx(() => paymentDueContoroller.data.isEmpty
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: paymentDueContoroller.data.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                decoration:
+                                    BoxDecoration(color: Colors.red.shade200),
+                                height: SizeConfig.screenHeight * 0.05,
+                                width: SizeConfig.screenWidth,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Expanded(
+                                        flex: 3,
+                                        child: Center(
+                                          child: Text(
+                                            paymentDueContoroller.data[index]["First_Name"],
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize:
+                                                    getProportionateScreenHeight(
+                                                        15),
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Center(
+                                        child: Text(
+                                          paymentDueContoroller.data[index]["O_Id"],
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize:
+                                                  getProportionateScreenHeight(
+                                                      15),
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 2,
+                                        child: Center(
+                                          child: Text(
+                                            paymentDueContoroller.data[index]["Amount"],
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize:
+                                                    getProportionateScreenHeight(
+                                                        16),
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )),
+                                    Expanded(
+                                        flex: 2,
+                                        child: Center(
+                                          child: Text(
+                                            paymentDueContoroller.data[index]["O_Date"],
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize:
+                                                    getProportionateScreenHeight(
+                                                        12),
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )),
+                                  ],
                                 ),
-                              )
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Center(
-                              child: Text(
-                                e["Invoice"],
-                                style: TextStyle(                          color: Colors.black,
-
-                                    fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),
                               ),
-                            ),),
-                          Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: Text(
-                                  e["Amount"],
-                                  style: TextStyle(                          color: Colors.black,
-
-                                      fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.bold),
-                                ),
-                              )
-                          ),
-                          Expanded(flex: 2, child: Center(child: Text(e["date"],style:  TextStyle(                          color: Colors.black,
-                              fontSize: getProportionateScreenHeight(12),fontWeight: FontWeight.bold),),)),
-                        ],
-                      ),
-                    ),
-                    Divider(),
-                  ],
-                ),)
+                              Divider(),
+                            ],
+                          );
+                        },
+                      )),
                 // ListTile(title: Text("Akash"),leading: Text("1"),trailing: Container(color: Colors.green,child: Text("Received")),subtitle: Text("20000"),)
                 // ...Invoice.map((e) => Card(
                 //       elevation: 3,

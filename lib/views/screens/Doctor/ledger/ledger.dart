@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:get/get.dart';
+import 'package:rentapp/main.dart';
 
 import '../../../../globals.dart';
+import 'balance_controller.dart';
+import 'ledger_controller.dart';
 
 class LedgerPage extends StatefulWidget {
   const LedgerPage({super.key});
@@ -19,7 +21,7 @@ class LedgerPage extends StatefulWidget {
 
 class _LedgerPageState extends State<LedgerPage> {
   final pdf = pw.Document();
-
+  LedgerContorller ledgerContorller = Get.put(LedgerContorller());
   @override
   void initState() {
     super.initState();
@@ -364,218 +366,290 @@ class _LedgerPageState extends State<LedgerPage> {
             left: MediaQuery.of(context).size.width * 0.00456,
             right: MediaQuery.of(context).size.width * 0.00456),
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                height: height * 0.08,
-                width: width,
-                decoration: BoxDecoration(color: Colors.blue.shade300),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.filter_alt,
-                            size: MediaQuery.of(context).size.width * 0.093,
-                          ),
-                          SizedBox(
-                            width: width * 0.02,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Duration",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.037,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "9 jun 2022 - Today",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width *
-                                                0.0325,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  Icon(Icons.arrow_drop_down)
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              Uint8List data = await pdf.save();
-                              await Printing.layoutPdf(onLayout: (format) => data);
-                            },
-                            child: Icon(
-                              Icons.picture_as_pdf,
-                              size: MediaQuery.of(context).size.width * 0.081,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              height: height * 0.08,
+              width: width,
+              decoration: BoxDecoration(color: Colors.blue.shade300),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.filter_alt,
+                          size: MediaQuery.of(context).size.width * 0.093,
+                        ),
+                        SizedBox(
+                          width: width * 0.02,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Duration",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.037,
+                                  fontWeight: FontWeight.w600),
                             ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width *0.01,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: height * 0.01,
-              ),
-              Container(
-                height: height * 0.05,
-                decoration: BoxDecoration(color: Colors.grey.shade300),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        child: Text(
-                          "Date",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.042,
-                              fontWeight: FontWeight.w500),
+                            Row(
+                              children: [
+                                Text(
+                                  "9 jun 2022 - Today",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.0325,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Icon(Icons.arrow_drop_down)
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
+                      ],
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: Text(
-                          "Details",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.042,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Text(
-                        "Voucher",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: MediaQuery.of(context).size.width * 0.042,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        "Debit",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: MediaQuery.of(context).size.width * 0.042,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        "Credit",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: MediaQuery.of(context).size.width * 0.042,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ...pdfdetails.map(
-                (e) => Container(
-                  alignment: Alignment.center,
-                  height: height * 0.04,
-                  width: width,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          e["date"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.037,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          e["type"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.037,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          e["voucher"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.037,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          e["debit"],
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.037,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.red),
-                        ),
-                      ),
-                      Expanded(
-                          flex: 2,
-                          child: Text(
-                            e["credit"],
-                            style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.037,
-                                color: Colors.green),
-                          )),
-                    ],
                   ),
-                ),
+                  Container(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            Uint8List data = await pdf.save();
+                            await Printing.layoutPdf(
+                                onLayout: (format) => data);
+                          },
+                          child: Icon(
+                            Icons.picture_as_pdf,
+                            size: MediaQuery.of(context).size.width * 0.081,
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Divider(
-                thickness: width * 0.00456,
+            ),
+            SizedBox(
+              height: height * 0.01,
+            ),
+            Container(
+              height: height * 0.05,
+              decoration: BoxDecoration(color: Colors.grey.shade300),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      child: Text(
+                        "Date",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: MediaQuery.of(context).size.width * 0.042,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      child: Text(
+                        "Details",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: MediaQuery.of(context).size.width * 0.042,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "Voucher",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "Debit",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "Credit",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ],
               ),
-              Row(
+            ),
+            FutureBuilder(
+              future: ledgerContorller.getApiData(
+                  k: {"Id": '${sharedPreferences.getString("Id")}'}),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("${snapshot.error}"),
+                  );
+                } else if (snapshot.hasData) {
+                  return Obx(
+                    () => (ledgerContorller.Data.isEmpty)
+                        ? Center(
+                            child: Image.asset("assets/images/no-data.png"))
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: ledgerContorller.Data.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                alignment: Alignment.center,
+                                height: height * 0.04,
+                                width: width,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        ledgerContorller.Data[index]["O_Date"],
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.037,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        ledgerContorller.Data[index]
+                                            ["Payment_Transfer_Name"],
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.037,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        "Invoice-${ledgerContorller.Data[index]["O_Id"]}",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.037,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: (ledgerContorller.Data[index]
+                                                  ['Payment_Type'] ==
+                                              'Pending')
+                                          ? Text(
+                                              ledgerContorller.Data[index]
+                                                  ["Amount"],
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.037,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.red),
+                                            )
+                                          : Text(
+                                              " ",
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.037,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.red),
+                                            ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: (ledgerContorller.Data[index]
+                                                  ['Payment_Type'] ==
+                                              'Receiving')
+                                          ? Text(
+                                              ledgerContorller.Data[index]
+                                                  ["Amount"],
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.037,
+                                                  color: Colors.green),
+                                            )
+                                          : Text(
+                                              " ",
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.037,
+                                                  color: Colors.green),
+                                            ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+            Divider(
+              thickness: width * 0.00456,
+            ),
+            Obx(() {
+              ledgerContorller.credit.value = 0;
+              ledgerContorller.debit.value = 0;
+              for (int i = 0; i < ledgerContorller.Data.length; i++) {
+                ledgerContorller.getAmount(
+                    k: int.parse(ledgerContorller.Data[i]["Amount"]),
+                    py: ledgerContorller.Data[i]["Payment_Type"]);
+              }
+              return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
@@ -588,65 +662,76 @@ class _LedgerPageState extends State<LedgerPage> {
                         fontWeight: FontWeight.w700,
                         fontSize: MediaQuery.of(context).size.width * 0.042),
                   ),
-                  Text("200000",
+                  Text("${ledgerContorller.debit}",
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
                           fontSize: MediaQuery.of(context).size.width * 0.037)),
-                  Text("20000",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: MediaQuery.of(context).size.width * 0.037)),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("00",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: MediaQuery.of(context).size.width * 0.037)),
-                  SizedBox(
-                    width: width * 0.04,
-                  ),
-                  Text("180000",
+                  Text("${ledgerContorller.credit}",
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
                           fontSize: MediaQuery.of(context).size.width * 0.037)),
                 ],
-              ),
-              Divider(
-                thickness: width * 0.00456,
-              ),
-              Row(
+              );
+            },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text("00",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: MediaQuery.of(context).size.width * 0.037)),
+                SizedBox(
+                  width: width * 0.04,
+                ),
+                GetBuilder<LedgerContorller>(
+                  builder: (controller) {
+                    return Text("${controller.credit}",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize:
+                                MediaQuery.of(context).size.width * 0.037));
+                  },
+                ),
+              ],
+            ),
+            Divider(
+              thickness: width * 0.00456,
+            ),
+            Obx(
+              () => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
                     width: width * 0.38,
                   ),
                   Text(
-                    " Balance :",
+                    "Balance :",
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w700,
                         fontSize: MediaQuery.of(context).size.width * 0.042),
                   ),
-                  Text("200000",
+                  Text(" ",
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
                           fontSize: MediaQuery.of(context).size.width * 0.037)),
-                  Text("200000",
+                  Text(
+                      "${ledgerContorller.credit.value + ledgerContorller.debit.value}",
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
                           fontSize: MediaQuery.of(context).size.width * 0.037)),
                 ],
               ),
-            ]),
+            )
+          ],
+        ),
       ),
     );
   }

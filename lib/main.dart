@@ -9,6 +9,8 @@ import 'package:rentapp/views/screens/Employee/homepage/homepage.dart';
 import 'package:rentapp/views/screens/LoginScreens/signin/sign_in_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'views/screens/Admin/homepage/homepage.dart';
+
 late SharedPreferences sharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +32,7 @@ class _MyAppState extends State<MyApp> {
 
   late bool k;
   late bool k1;
+  late bool k2;
 
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _MyAppState extends State<MyApp> {
   getData() async {
     k = sharedPreferences.getBool('isLogin') ?? false;
     k1 = sharedPreferences.getBool('isDoctor') ?? false;
+    k2 = sharedPreferences.getBool('isAdmin') ?? false;
   }
 
   @override
@@ -49,7 +53,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: themeData(),
       initialRoute: (k)
-          ? (k1)
+          ?(k2)? AdminHomePage.routeName :(k1)
               ? DoctorHomePage.routeName
               : EmployeeHomePage.routeName
           : SigniInScreen.routeName,

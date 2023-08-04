@@ -137,6 +137,8 @@ class _SigniInScreenState extends State<SigniInScreen> {
                                     password == "Mohit@123456") {
                                   await sharedPreferences.setBool(
                                       "isLogin", true);
+                                  await sharedPreferences.setBool(
+                                      "isAdmin", true);
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     AdminHomePage.routeName,
