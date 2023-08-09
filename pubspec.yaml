@@ -48,6 +48,7 @@ dependencies:
   email_otp: 
   shared_preferences: 
   custom_searchable_dropdown: ^2.1.1
+  upi_india: 
 
 dev_dependencies:
   flutter_test:

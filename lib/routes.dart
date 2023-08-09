@@ -4,6 +4,7 @@ import 'package:rentapp/views/screens/Doctor/complain/complain.dart';
 import 'package:rentapp/views/screens/Doctor/homepage/homepage.dart';
 import 'package:rentapp/views/screens/Doctor/ledger/ledger.dart';
 import 'package:rentapp/views/screens/Doctor/order/order_page.dart';
+import 'package:rentapp/views/screens/Doctor/order/payment_order_page.dart';
 import 'package:rentapp/views/screens/Doctor/order/printer_details_screen.dart';
 import 'package:rentapp/views/screens/Doctor/order_received/order_recevied.dart';
 import 'package:rentapp/views/screens/Doctor/payment/payment.dart';
@@ -42,4 +43,5 @@ final Map<String, WidgetBuilder> routes = {
   OrderDeliveryPage.routeName:(context) => OrderDeliveryPage(),
   DaliyExpensesPage.routeName:(context) => DaliyExpensesPage(),
   AttendancePage.routeName:(context) => AttendancePage(),
+  PaymentOrderPage.routeName:(context) => PaymentOrderPage(),
 };

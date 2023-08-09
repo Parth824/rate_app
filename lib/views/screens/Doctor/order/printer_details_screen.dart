@@ -1,7 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:get/get.dart';
+import 'package:rentapp/views/screens/Doctor/order/rent_controller.dart';
 import '../../../../size_config.dart';
+import 'payment_order_page.dart';
 
 class PrinterDetails extends StatefulWidget {
   const PrinterDetails({super.key});
@@ -19,21 +21,165 @@ class _PrinterDetailsState extends State<PrinterDetails> {
     "11 X 14",
     "14 X 17",
   ];
+
+  RentController rentController = Get.put(RentController());
+  Widget InkData({required List Inki}) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ...Inki.map(
+            (e) => Padding(
+              padding: EdgeInsets.all(getProportionateScreenHeight(2)),
+              child: GestureDetector(
+                onTap: () {
+                  print(e);
+                  rentController.setInk(k: e);
+                },
+                child: Obx(
+                  () => Container(
+                    height: SizeConfig.screenHeight * 0.05,
+                    width: SizeConfig.screenWidth * 0.2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: (rentController.Ink.contains(e))
+                              ? Colors.blue
+                              : Colors.grey,
+                          width: getProportionateScreenHeight(2)),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      e,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget X_RayData({required List X_ray_fimli}) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ...X_ray_fimli.map(
+            (e) => Padding(
+              padding: EdgeInsets.all(getProportionateScreenHeight(2)),
+              child: GestureDetector(
+                onTap: () {
+                  rentController.setXraw(k: e);
+                },
+                child: Obx(
+                  () => Container(
+                    height: SizeConfig.screenHeight * 0.05,
+                    width: SizeConfig.screenWidth * 0.2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: (rentController.X_raw.contains(e))
+                              ? Colors.blue
+                              : Colors.grey,
+                          width: getProportionateScreenHeight(2)),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      e,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget JellyData({required List Jelly}) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ...Jelly.map(
+            (e) => Padding(
+              padding: EdgeInsets.all(getProportionateScreenHeight(2)),
+              child: GestureDetector(
+                onTap: () {
+                  rentController.setJayy(k: e);
+                },
+                child: Obx(
+                  () => Container(
+                    height: SizeConfig.screenHeight * 0.05,
+                    width: SizeConfig.screenWidth * 0.2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: (rentController.Jally.contains(e)) ? Colors.blue : Colors.grey,
+                          width: getProportionateScreenHeight(2)),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      e,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ).toList(),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Map k = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
-      appBar: AppBar(leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-        title: Text("Rent Page",style: TextStyle(color: Colors.white),),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          "Rent Page",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         children: [
-          ProductImage(k['images']),
+          (k['Paper_Photo'] != "")
+              ? ProductImage(k['Paper_Photo'])
+              : Container(
+                  height: SizeConfig.screenHeight * .3,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      k['Name'],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: getProportionateScreenHeight(40),
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
           Container(
             padding: EdgeInsets.all(getProportionateScreenHeight(10)),
             width: double.infinity,
@@ -41,7 +187,7 @@ class _PrinterDetailsState extends State<PrinterDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  k['title'],
+                  k['Name'],
                   style: TextStyle(
                     fontSize: getProportionateScreenHeight(22),
                     color: Colors.black,
@@ -70,22 +216,28 @@ class _PrinterDetailsState extends State<PrinterDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              rentController.subPaper();
+                            },
                             child: Icon(
                               AntDesign.minussquare,
                               size: getProportionateScreenHeight(25),
                               color: Colors.grey,
                             ),
                           ),
-                          Text(
-                            "1",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: getProportionateScreenHeight(18),
+                          Obx(
+                            () => Text(
+                              "${rentController.Paper}",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: getProportionateScreenHeight(18),
+                              ),
                             ),
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              rentController.addPaper();
+                            },
                             child: Icon(
                               AntDesign.plussquare,
                               size: getProportionateScreenHeight(25),
@@ -111,7 +263,9 @@ class _PrinterDetailsState extends State<PrinterDetails> {
                 SizedBox(
                   height: SizeConfig.screenHeight * .012,
                 ),
-                InkData(Inki: Inki),
+                InkData(
+                  Inki: Inki,
+                ),
                 SizedBox(
                   height: SizeConfig.screenHeight * .012,
                 ),
@@ -154,27 +308,39 @@ class _PrinterDetailsState extends State<PrinterDetails> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-
-                SizedBox(width: getProportionateScreenWidth(15),),
-                Text(
-                  "₹ 500",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: getProportionateScreenHeight(
-                      22,
-
+                SizedBox(
+                  width: getProportionateScreenWidth(15),
+                ),
+                Obx(
+                  () => Text(
+                    "₹ ${rentController.reat}",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: getProportionateScreenHeight(
+                        22,
+                      ),
+                      fontWeight: FontWeight.w600,
                     ),
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(width: getProportionateScreenWidth(15),),
+                SizedBox(
+                  width: getProportionateScreenWidth(15),
+                ),
                 Container(
                   height: SizeConfig.screenHeight * .07,
                   width: SizeConfig.screenWidth * .5,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(PaymentOrderPage.routeName);
+                    },
                     child: Text("Rent"),
-                    style: ButtonStyle(textStyle: MaterialStateProperty.all(TextStyle(fontSize:getProportionateScreenHeight(20),),),backgroundColor: MaterialStateProperty.all(Colors.green),
+                    style: ButtonStyle(
+                      textStyle: MaterialStateProperty.all(
+                        TextStyle(
+                          fontSize: getProportionateScreenHeight(20),
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.all(Colors.green),
                     ),
                   ),
                 ),
@@ -190,138 +356,8 @@ class _PrinterDetailsState extends State<PrinterDetails> {
     return Container(
       height: SizeConfig.screenHeight * .3,
       width: double.infinity,
-      child: Image.asset(image, fit: BoxFit.cover),
+      child: Image.network("https://udservice.shop//Upload/$image",
+          fit: BoxFit.cover),
     );
   }
 }
-
-class X_RayData extends StatelessWidget {
-  const X_RayData({
-    super.key,
-    required this.X_ray_fimli,
-  });
-
-  final List X_ray_fimli;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          ...X_ray_fimli.map(
-                (e) => Padding(
-              padding: EdgeInsets.all(getProportionateScreenHeight(2)),
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: SizeConfig.screenHeight * 0.05,
-                  width: SizeConfig.screenWidth * 0.2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: (e == "8 X 10")? Colors.blue: Colors.grey,width: getProportionateScreenHeight(2)),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ).toList(),
-        ],
-      ),
-    );
-  }
-}
-
-class JellyData extends StatelessWidget {
-  const JellyData({
-    super.key,
-    required this.Jelly,
-  });
-
-  final List Jelly;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          ...Jelly.map(
-                (e) => Padding(
-              padding: EdgeInsets.all(getProportionateScreenHeight(2)),
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: SizeConfig.screenHeight * 0.05,
-                  width: SizeConfig.screenWidth * 0.2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: (e == "5 kg")? Colors.blue: Colors.grey,width: getProportionateScreenHeight(2)),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ).toList(),
-        ],
-      ),
-    );
-  }
-}
-
-class InkData extends StatelessWidget {
-  const InkData({
-    super.key,
-    required this.Inki,
-  });
-
-  final List Inki;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          ...Inki.map(
-                (e) => Padding(
-              padding: EdgeInsets.all(getProportionateScreenHeight(2)),
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: SizeConfig.screenHeight * 0.05,
-                  width: SizeConfig.screenWidth * 0.2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: (e == "M")? Colors.blue: Colors.grey,width: getProportionateScreenHeight(2)),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ).toList(),
-        ],
-      ),
-    );
-  }
-}
-
-

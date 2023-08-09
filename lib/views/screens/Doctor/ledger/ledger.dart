@@ -199,7 +199,7 @@ class _LedgerPageState extends State<LedgerPage> {
                     ],
                   ),
                 ),
-                ...pdfdetails.map(
+                ...ledgerContorller.Data.map(
                   (e) => pw.Container(
                     alignment: pw.Alignment.center,
                     height: MediaQuery.of(context).size.height * 0.04,
@@ -211,7 +211,7 @@ class _LedgerPageState extends State<LedgerPage> {
                         pw.Expanded(
                           flex: 3,
                           child: pw.Text(
-                            e["date"],
+                            e["O_Date"],
                             style: pw.TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.037,
@@ -221,7 +221,7 @@ class _LedgerPageState extends State<LedgerPage> {
                         pw.Expanded(
                           flex: 2,
                           child: pw.Text(
-                            e["type"],
+                            e["Payment_Transfer_Name"],
                             style: pw.TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.037,
@@ -231,7 +231,7 @@ class _LedgerPageState extends State<LedgerPage> {
                         pw.Expanded(
                           flex: 3,
                           child: pw.Text(
-                            e["voucher"],
+                            "Invoice-${e["O_Id"]}",
                             style: pw.TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.037,
@@ -240,15 +240,28 @@ class _LedgerPageState extends State<LedgerPage> {
                         ),
                         pw.Expanded(
                           flex: 2,
-                          child: pw.Text(
-                            e["debit"],
+                          child: (e['Payment_Type'] == 'Pending')?pw.Text(
+                            e["Amount"],
                             style: pw.TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.037,
                                 fontWeight: pw.FontWeight.normal),
+                          ):pw.Text(
+                            " ",
+                            style: pw.TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.037,
+                                fontWeight: pw.FontWeight.normal),
+                          )
+                        ),
+                        pw.Expanded(
+                          flex: 2,
+                          child: (e['Payment_Type'] == 'Receiving')?pw.Text(
+                            e["Amount"],
+                          ):pw.Text(
+                            " ",
                           ),
                         ),
-                        pw.Expanded(flex: 2, child: pw.Text(e["credit"])),
                       ],
                     ),
                   ),
@@ -269,13 +282,13 @@ class _LedgerPageState extends State<LedgerPage> {
                           fontWeight: pw.FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.042),
                     ),
-                    pw.Text("200000",
+                    pw.Text("${ledgerContorller.debit}",
                         style: pw.TextStyle(
                             color: PdfColors.black,
                             fontWeight: pw.FontWeight.bold,
                             fontSize:
                                 MediaQuery.of(context).size.width * 0.037)),
-                    pw.Text("20000",
+                    pw.Text("${ledgerContorller.credit}",
                         style: pw.TextStyle(
                             color: PdfColors.black,
                             fontWeight: pw.FontWeight.bold,
@@ -286,7 +299,7 @@ class _LedgerPageState extends State<LedgerPage> {
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.end,
                   children: [
-                    pw.Text("00",
+                    pw.Text("${(ledgerContorller.credit.value + ledgerContorller.debit.value) - ledgerContorller.debit.value}",
                         style: pw.TextStyle(
                             color: PdfColors.black,
                             fontWeight: pw.FontWeight.bold,
@@ -295,12 +308,15 @@ class _LedgerPageState extends State<LedgerPage> {
                     pw.SizedBox(
                       width: MediaQuery.of(context).size.width * 0.04,
                     ),
-                    pw.Text("180000",
+                    pw.Text("${(ledgerContorller.credit.value + ledgerContorller.debit.value) - ledgerContorller.credit.value}",
                         style: pw.TextStyle(
                             color: PdfColors.black,
                             fontWeight: pw.FontWeight.bold,
                             fontSize:
                                 MediaQuery.of(context).size.width * 0.037)),
+                    pw.SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.04,
+                    ),
                   ],
                 ),
                 pw.Divider(
@@ -319,13 +335,13 @@ class _LedgerPageState extends State<LedgerPage> {
                           fontWeight: pw.FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.042),
                     ),
-                    pw.Text("200000",
+                    pw.Text("${ledgerContorller.credit.value + ledgerContorller.debit.value}",
                         style: pw.TextStyle(
                             color: PdfColors.black,
                             fontWeight: pw.FontWeight.bold,
                             fontSize:
                                 MediaQuery.of(context).size.width * 0.037)),
-                    pw.Text("200000",
+                    pw.Text("${ledgerContorller.credit.value + ledgerContorller.debit.value}",
                         style: pw.TextStyle(
                             color: PdfColors.black,
                             fontWeight: pw.FontWeight.bold,
@@ -641,95 +657,114 @@ class _LedgerPageState extends State<LedgerPage> {
             Divider(
               thickness: width * 0.00456,
             ),
-            Obx(() {
-              ledgerContorller.credit.value = 0;
-              ledgerContorller.debit.value = 0;
-              for (int i = 0; i < ledgerContorller.Data.length; i++) {
-                ledgerContorller.getAmount(
-                    k: int.parse(ledgerContorller.Data[i]["Amount"]),
-                    py: ledgerContorller.Data[i]["Payment_Type"]);
-              }
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: width * 0.2,
-                  ),
-                  Text(
-                    "Closing Balance :",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                        fontSize: MediaQuery.of(context).size.width * 0.042),
-                  ),
-                  Text("${ledgerContorller.debit}",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: MediaQuery.of(context).size.width * 0.037)),
-                  Text("${ledgerContorller.credit}",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: MediaQuery.of(context).size.width * 0.037)),
-                ],
-              );
-            },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text("00",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                        fontSize: MediaQuery.of(context).size.width * 0.037)),
-                SizedBox(
-                  width: width * 0.04,
-                ),
-                GetBuilder<LedgerContorller>(
-                  builder: (controller) {
-                    return Text("${controller.credit}",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize:
-                                MediaQuery.of(context).size.width * 0.037));
-                  },
-                ),
-              ],
-            ),
-            Divider(
-              thickness: width * 0.00456,
-            ),
             Obx(
-              () => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: width * 0.38,
-                  ),
-                  Text(
-                    "Balance :",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                        fontSize: MediaQuery.of(context).size.width * 0.042),
-                  ),
-                  Text(" ",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: MediaQuery.of(context).size.width * 0.037)),
-                  Text(
-                      "${ledgerContorller.credit.value + ledgerContorller.debit.value}",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: MediaQuery.of(context).size.width * 0.037)),
-                ],
-              ),
-            )
+              () {
+                ledgerContorller.credit.value = 0;
+                ledgerContorller.debit.value = 0;
+                for (int i = 0; i < ledgerContorller.Data.length; i++) {
+                  ledgerContorller.getAmount(
+                      k: int.parse(ledgerContorller.Data[i]["Amount"]),
+                      py: ledgerContorller.Data[i]["Payment_Type"]);
+                }
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("${ledgerContorller.debit}",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.037)),
+                        SizedBox(
+                          width: width * 0.03,
+                        ),
+                        Text(
+                          "${ledgerContorller.credit}",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.037),
+                        ),
+                        SizedBox(
+                          width: width * 0.03,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: width * 0.2,
+                        ),
+                        Text(
+                          "Closing Balance :",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.042),
+                        ),
+                        Text(
+                            "${(ledgerContorller.credit.value + ledgerContorller.debit.value) - ledgerContorller.debit.value}",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.037)),
+                        Text(
+                            "${(ledgerContorller.credit.value + ledgerContorller.debit.value) - ledgerContorller.credit.value}",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.037)),
+                      ],
+                    ),
+                    Divider(
+                      thickness: width * 0.00456,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: width * 0.38,
+                        ),
+                        Text(
+                          "Balance :",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.042),
+                        ),
+                        Text(
+                          "${ledgerContorller.credit.value + ledgerContorller.debit.value}",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.037),
+                        ),
+                        SizedBox(
+                          width: width * 0.01,
+                        ),
+                        Text(
+                          "${ledgerContorller.credit.value + ledgerContorller.debit.value}",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.037),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
           ],
         ),
       ),
