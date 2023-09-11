@@ -4,14 +4,14 @@ import 'package:rentapp/size_config.dart';
 import 'package:searchfield/searchfield.dart';
 
 
-class AddPaymentsAlert extends StatefulWidget {
-  const AddPaymentsAlert({super.key});
+class AddInventoryAlert extends StatefulWidget {
+  const AddInventoryAlert({super.key});
 
   @override
-  State<AddPaymentsAlert> createState() => _AddPaymentsAlertState();
+  State<AddInventoryAlert> createState() => _AddInventoryAlertState();
 }
 
-class _AddPaymentsAlertState extends State<AddPaymentsAlert> {
+class _AddInventoryAlertState extends State<AddInventoryAlert> {
  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
 
@@ -23,7 +23,7 @@ class _AddPaymentsAlertState extends State<AddPaymentsAlert> {
     return AlertDialog(
       title: Center(
         child: Text(
-          "Add Payment",
+          "Add Items",
           style: TextStyle(),
         ),
       ),
@@ -53,10 +53,15 @@ class _AddPaymentsAlertState extends State<AddPaymentsAlert> {
                           affinity: TextAffinity.upstream));
                   }
                 },
-                
+
                 focusNode: AlwaysDisabledFocusNode(),
                 textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
+                decoration: InputDecoration( focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+                ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(SizeConfig.screenHeight * 0.03),
@@ -88,17 +93,19 @@ class _AddPaymentsAlertState extends State<AddPaymentsAlert> {
                   textInputAction: TextInputAction.next ,
                   searchInputDecoration: InputDecoration(
                     labelText: "Contact",
-                    enabledBorder: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(SizeConfig.screenHeight * 0.03),
-                  ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+                      ),
                   ),
                   onSuggestionTap: (val) {
                     setState(() {
                       selectionCount = val.toString();
                     });
                   },
-                  
+
                   itemHeight: getProportionateScreenHeight(50),
                   maxSuggestionsInViewPort: 6,
                   suggestionsDecoration: SuggestionDecoration(
@@ -129,7 +136,7 @@ class _AddPaymentsAlertState extends State<AddPaymentsAlert> {
               ),
               buildTextFormFieldEmployeeExpense(
                   text: "Cheque Number", textInputAction: TextInputAction.next),
-              
+
 
             ],
           ),
@@ -163,6 +170,9 @@ class _AddPaymentsAlertState extends State<AddPaymentsAlert> {
     return TextFormField(
       textInputAction: textInputAction,
       decoration: InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
         ),

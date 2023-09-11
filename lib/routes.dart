@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rentapp/views/screens/Admin/homepage/homepage.dart';
 import 'package:rentapp/views/screens/Doctor/complain/complain.dart';
 import 'package:rentapp/views/screens/Doctor/homepage/homepage.dart';
@@ -20,6 +21,9 @@ import 'package:rentapp/views/screens/LoginScreens/otp/otp_screen.dart';
 import 'package:rentapp/views/screens/LoginScreens/select_category/select_category_screen.dart';
 import 'package:rentapp/views/screens/LoginScreens/sign_up/sign_up_screen.dart';
 import 'package:rentapp/views/screens/LoginScreens/signin/sign_in_screen.dart';
+
+import 'views/screens/Admin/inventory/inventory.dart';
+import 'views/screens/Admin/totalsales/totalsales.dart';
 
 final Map<String, WidgetBuilder> routes = {
   // SplashScreen.routeName: (context) => SplashScreen(),
@@ -44,4 +48,96 @@ final Map<String, WidgetBuilder> routes = {
   DaliyExpensesPage.routeName:(context) => DaliyExpensesPage(),
   AttendancePage.routeName:(context) => AttendancePage(),
   PaymentOrderPage.routeName:(context) => PaymentOrderPage(),
+  SalesReportPage.routeName:(context) =>SalesReportPage(),
+  InventoryPage.routeName:(context) => InventoryPage(),
 };
+
+
+class Routes {
+  static final routes = [
+    GetPage(
+      name: SigniInScreen.routeName,
+      page: () => SigniInScreen(),
+    ),
+    GetPage(
+      name: ForgotPasswordScreen.routeName,
+      page: () => ForgotPasswordScreen(),
+    ),
+    GetPage(
+      name: LoginSuccessScreen.routeName,
+      page: () => LoginSuccessScreen(),
+    ),
+    GetPage(
+      name: SignUpScreen.routeName,
+      page: () => SignUpScreen(),
+    ),
+    GetPage(
+      name: CompleteProfileScreen.routeName,
+      page: () => CompleteProfileScreen(),
+    ),
+    GetPage(
+      name: OtpScreen.routeName,
+      page: () => OtpScreen(),
+    ),
+    GetPage(
+      name: SelectCategory.routeName,
+      page: () => SelectCategory(),
+    ),
+    GetPage(
+      name: DoctorHomePage.routeName,
+      page: () => DoctorHomePage(),
+    ),
+    GetPage(
+      name: Order_Page.routeName,
+      page: () => Order_Page(),
+    ),
+    GetPage(
+      name: PrinterDetails.routeName,
+      page: () => PrinterDetails(),
+    ),
+    GetPage(
+      name: PaymentPage.routeName,
+      page: () => PaymentPage(),
+    ),
+    GetPage(
+      name: ComplainPage.routeName,
+      page: () => ComplainPage(),
+    ),
+    GetPage(
+      name: OrderReceivedPage.routeName,
+      page: () => OrderReceivedPage(),
+    ),
+    GetPage(
+      name: InventoryPage.routeName,
+      page: () => InventoryPage(),
+    ),
+    GetPage(
+      name: LedgerPage.routeName,
+      page: () => LedgerPage(),
+    ),
+    GetPage(
+      name: PaymentDuePage.routeName,
+      page: () => PaymentDuePage(),
+    ),
+    GetPage(
+      name: AdminHomePage.routeName,
+      page: () => AdminHomePage(),
+    ),
+    GetPage(
+      name: EmployeeHomePage.routeName,
+      page: () => EmployeeHomePage(),
+    ),
+    GetPage(
+      name: OrderDeliveryPage.routeName,
+      page: () => OrderDeliveryPage(),
+    ),
+    GetPage(
+      name: DaliyExpensesPage.routeName,
+      page: () => DaliyExpensesPage(),
+    ),
+    GetPage(
+      name: AttendancePage.routeName,
+      page: () => AttendancePage(),
+    ),
+  ];
+}

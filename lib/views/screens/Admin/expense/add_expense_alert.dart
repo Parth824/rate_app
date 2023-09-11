@@ -1,7 +1,16 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+
 // import 'package:intl/intl.dart';
 import 'package:rentapp/size_config.dart';
+import 'package:get/get.dart';
+import 'package:rentapp/views/screens/Admin/expense/controllers/cir_controller.dart';
+
+import 'controllers/expense_controller.dart';
 
 class AlertDialogExpense extends StatefulWidget {
   const AlertDialogExpense({super.key});
@@ -15,6 +24,42 @@ class _AlertDialogExpenseState extends State<AlertDialogExpense> {
   DateTime? _selectedDate;
 
   TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _nameEditingController = TextEditingController();
+  TextEditingController _decEditingController = TextEditingController();
+  TextEditingController _categoryEditingController = TextEditingController();
+  TextEditingController _amountEditingController = TextEditingController();
+
+  Uint8List? image;
+  String? name;
+  String? dec;
+  String? category;
+  String? amount;
+  String? date;
+  String? imagename;
+  ImagePicker imagePicker = ImagePicker();
+
+  ExpenseController expenseController = Get.find<ExpenseController>();
+
+  // @override
+  // void initState() {
+  //   getdata();
+  //   super.initState();
+  // }
+  //
+  // getdata() async {
+  //   await expenseController.getData();
+  // }
+  Future<void> _pickImage() async {
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile!.path);
+      print(imageFile.path.split('/').last);
+      imagename = imageFile.path.split('/').last;
+      image = await imageFile.readAsBytes();
+    }
+  }
+
+  ExCirController cirController = Get.put(ExCirController());
 
   @override
   Widget build(BuildContext context) {
@@ -31,40 +76,108 @@ class _AlertDialogExpenseState extends State<AlertDialogExpense> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                height: SizeConfig.screenHeight*0.12,
-                width: SizeConfig.screenWidth*0.55,
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(getProportionateScreenHeight(10),),
+              GestureDetector(
+                onTap: () {
+                  _pickImage();
+                },
+                child: Container(
+                  height: SizeConfig.screenHeight * 0.12,
+                  width: SizeConfig.screenWidth * 0.55,
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(
+                      getProportionateScreenHeight(10),
+                    ),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: Colors.grey.shade600,
+                        ),
+                        Text(
+                          "Add Bill",
+                          style: TextStyle(color: Colors.grey.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                child: Center(
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
-                    Icon(Icons.add,color: Colors.grey.shade600,),
-                    Text("Add Bill",style: TextStyle(color: Colors.grey.shade600),),
-                  ],),
-                ),
               ),
               SizedBox(
                 height: getProportionateScreenHeight(10),
               ),
               buildTextFormFieldEmployeeExpense(
-                  text: "Name", textInputAction: TextInputAction.next),
+                  controller: _nameEditingController,
+                  onSaved: (val) {
+                    name = val;
+                  },
+                  text: "Name",
+                  textInputAction: TextInputAction.next,
+                  validator: (val) {
+                    if (val!.isEmpty) {}
+                    return null;
+                  },
+                  keyboardType: TextInputType.text),
               SizedBox(
                 height: getProportionateScreenHeight(10),
               ),
               buildTextFormFieldEmployeeExpense(
-                  text: "Category", textInputAction: TextInputAction.next),
+                  controller: _decEditingController,
+                  onSaved: (val) {
+                    dec = val;
+                  },
+                  text: "Description",
+                  textInputAction: TextInputAction.next,
+                  validator: (val) {
+                    if (val!.isEmpty) {}
+                    return null;
+                  },
+                  keyboardType: TextInputType.text),
               SizedBox(
                 height: getProportionateScreenHeight(10),
               ),
               buildTextFormFieldEmployeeExpense(
-                  text: "Amount", textInputAction: TextInputAction.next),
+                  controller: _categoryEditingController,
+                  onSaved: (val) {
+                    category = val;
+                  },
+                  text: "Category",
+                  textInputAction: TextInputAction.next,
+                  validator: (val) {
+                    if (val!.isEmpty) {}
+                    return null;
+                  },
+                  keyboardType: TextInputType.text),
+              SizedBox(
+                height: getProportionateScreenHeight(10),
+              ),
+              buildTextFormFieldEmployeeExpense(
+                  controller: _amountEditingController,
+                  onSaved: (val) {
+                    amount = val;
+                  },
+                  text: "Amount",
+                  textInputAction: TextInputAction.next,
+                  validator: (val) {
+                    if (val!.isEmpty) {}
+                    return null;
+                  },
+                  keyboardType: TextInputType.number),
               SizedBox(
                 height: getProportionateScreenHeight(10),
               ),
               TextFormField(
                 controller: _textEditingController,
+                onSaved: (val) {
+                  date = val;
+                },
+                validator: (val) {
+                  if (val!.isEmpty) {}
+                  return null;
+                },
                 onTap: () async {
                   DateTime? newSelectedDate = await showDatePicker(
                     context: context,
@@ -77,7 +190,7 @@ class _AlertDialogExpenseState extends State<AlertDialogExpense> {
                   if (newSelectedDate != null) {
                     _selectedDate = newSelectedDate;
                     _textEditingController
-                      ..text = DateFormat.yMMMd().format(_selectedDate!)
+                      ..text = DateFormat("yyyy-MM-dd").format(_selectedDate!)
                       ..selection = TextSelection.fromPosition(TextPosition(
                           offset: _textEditingController.text.length,
                           affinity: TextAffinity.upstream));
@@ -86,6 +199,14 @@ class _AlertDialogExpenseState extends State<AlertDialogExpense> {
                 focusNode: AlwaysDisabledFocusNode(),
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius:
                         BorderRadius.circular(SizeConfig.screenHeight * 0.03),
@@ -111,8 +232,28 @@ class _AlertDialogExpenseState extends State<AlertDialogExpense> {
           ),
         ),
         ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
+          onPressed: () async {
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
+              print(name);
+              print(category);
+              print(amount);
+              print(date);
+              print(dec);
+              Map k = {
+                'image': image,
+                'name': name,
+                'category': category,
+                'amount': amount,
+                'date': date,
+                'dec': dec,
+                'e_id': "null",
+                'imagename': imagename,
+              };
+              await expenseController.InsertData(k: k);
+            }
+            cirController.setLoding(isl: false);
+            Get.back();
           },
           child: Text(
             "Add",
@@ -123,11 +264,24 @@ class _AlertDialogExpenseState extends State<AlertDialogExpense> {
     );
   }
 
-  TextFormField buildTextFormFieldEmployeeExpense(
-      {required TextInputAction textInputAction, required String text}) {
+  TextFormField buildTextFormFieldEmployeeExpense({
+    required TextInputAction textInputAction,
+    required String text,
+    required TextEditingController controller,
+    required void Function(String?)? onSaved,
+    required String? Function(String?)? validator,
+    required TextInputType? keyboardType,
+  }) {
     return TextFormField(
+      controller: controller,
+      onSaved: onSaved,
+      validator: validator,
+      keyboardType: keyboardType,
       textInputAction: textInputAction,
       decoration: InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
         ),
@@ -139,8 +293,6 @@ class _AlertDialogExpenseState extends State<AlertDialogExpense> {
     );
   }
 }
-
-
 
 class AlwaysDisabledFocusNode extends FocusNode {
   @override

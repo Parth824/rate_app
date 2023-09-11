@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:rentapp/views/screens/Admin/homepage/homepage.dart';
 import 'package:rentapp/views/screens/Employee/homepage/homepage.dart';
 import '../../../../components/custom_suffix.dart';
-import '../../../../components/default_button.dart';
+
 import '../../../../components/form_error.dart';
 import '../../../../components/signup_text.dart';
 import '../../../../components/social_circle.dart';
@@ -12,11 +12,11 @@ import '../../../../main.dart';
 import '../../../../size_config.dart';
 import '../../Doctor/homepage/homepage.dart';
 import '../forgot_password/forgot_pass_screen.dart';
-import '../login_success/login_success_screen.dart';
+
 import '../select_category/select_category_controller.dart';
 import 'cir_controller.dart';
 import 'sign_in_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class SigniInScreen extends StatefulWidget {
   const SigniInScreen({Key? key}) : super(key: key);
@@ -34,11 +34,6 @@ class _SigniInScreenState extends State<SigniInScreen> {
 
   bool remember = false;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   void addError({String? error}) {
     if (!errors.contains(error))

@@ -194,7 +194,7 @@ class _OnlinePaymentPageState extends State<OnlinePaymentPage> {
                   );
                 } else
                   return Center(
-                    child: Text('kkk'),
+                    child: Text(""),
                   );
               },
             ),

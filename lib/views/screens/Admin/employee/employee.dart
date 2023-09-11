@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:rentapp/views/screens/Admin/employee/controllers/employee_controller.dart';
 import 'package:rentapp/views/screens/Admin/employee/info_employee.dart';
 
 import '../../../../size_config.dart';
+import 'package:get/get.dart';
 
 class EmployeePage extends StatefulWidget {
   const EmployeePage({super.key});
@@ -53,143 +55,177 @@ class _EmployeePageState extends State<EmployeePage> {
     },
   ];
 
+  EmployeeController employeeController = Get.put(EmployeeController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
+
+  getdata() async {
+    await employeeController.getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      body: ListView.builder(
-          itemCount: Data.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15, top: 15),
-              child: Container(
-                  width: SizeConfig.screenWidth,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(13),
-                    color: Colors.white,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
+      body: Obx(() {
+        return (employeeController.emplist.value.isNotEmpty)
+            ? ListView.builder(
+                itemCount: employeeController.emplist.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(left: 15.0, right: 15, top: 15),
+                    child: Container(
+                      width: SizeConfig.screenWidth,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13),
+                        color: Colors.white,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(
-                                  Icons.person,
-                                  color: Colors.blue,
-                                ),
-                                Container(
-                                  width: SizeConfig.screenWidth * .73,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                      "${Data[index]['name']}",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 19,
-                                          letterSpacing: 1),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      color: Colors.blue,
                                     ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => InforPage(),settings: RouteSettings(arguments: Data[index])));
-                                      });
-                                    },
-                                    child: Icon(
-                                      Icons.remove_red_eye,
-                                      color: Colors.green,
-                                    )),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.call,
-                                  color: Colors.blue,
-                                ),
-                                Container(
-                                  width: SizeConfig.screenWidth * .75,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                      "${Data[index]['contact']}",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 19,
-                                          letterSpacing: 1),
+                                    Container(
+                                      width: SizeConfig.screenWidth * .73,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "${employeeController.emplist.value[index]['First_Name']} ${employeeController.emplist[index]['Last_Name']}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 19,
+                                              letterSpacing: 1),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          // setState(() {
+                                          //   Navigator.push(
+                                          //       context,
+                                          //       MaterialPageRoute(
+                                          //           builder: (context) =>
+                                          //               InforPage(),
+                                          //           settings: RouteSettings(
+                                          //               arguments:
+                                          //                   Data[index])));
+                                          // });
+                                          // Get.to(InforPage(),);
+                                        },
+                                        child: Icon(
+                                          Icons.remove_red_eye,
+                                          color: Colors.green,
+                                        )),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Colors.blue,
+                                SizedBox(
+                                  height: 5,
                                 ),
-                                Container(
-                                  width: SizeConfig.screenWidth * .75,
-                                  // height: MediaQuery.of(context).size.height * 0.03,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                      "${Data[index]['address']}",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 19,
-                                          letterSpacing: 1,
-                                          overflow: TextOverflow.clip),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.call,
+                                      color: Colors.blue,
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.currency_rupee,
-                                  color: Colors.blue,
-                                ),
-                                Container(
-                                  width: SizeConfig.screenWidth * .75,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                      "${Data[index]['salary']}",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize:
-                                              getProportionateScreenHeight(18),
-                                          letterSpacing: 1),
+                                    Container(
+                                      width: SizeConfig.screenWidth * .75,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "${employeeController.emplist[index]['Phone_Number']}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 19,
+                                              letterSpacing: 1),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on,
+                                      color: Colors.blue,
+                                    ),
+                                    Container(
+                                      width: SizeConfig.screenWidth * .75,
+                                      // height: MediaQuery.of(context).size.height * 0.03,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "${employeeController.emplist[index]['Address']}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 19,
+                                              letterSpacing: 1,
+                                              overflow: TextOverflow.clip),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.currency_rupee,
+                                      color: Colors.blue,
+                                    ),
+                                    Container(
+                                      width: SizeConfig.screenWidth * .75,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "${employeeController.emplist[index]['Salary']}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize:
+                                                  getProportionateScreenHeight(
+                                                      18),
+                                              letterSpacing: 1),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  )),
-            );
-          }),
+                  );
+                })
+            : Center(
+                child: CircularProgressIndicator(),
+              );
+      }),
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rentapp/size_config.dart';
 
-
 class AlertItems extends StatefulWidget {
   const AlertItems({super.key});
 
@@ -29,17 +28,28 @@ class _AlertItemsState extends State<AlertItems> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: SizeConfig.screenHeight*0.12,
-                width: SizeConfig.screenWidth*0.55,
+                height: SizeConfig.screenHeight * 0.12,
+                width: SizeConfig.screenWidth * 0.55,
                 decoration: BoxDecoration(
                   border: Border.all(),
-                  borderRadius: BorderRadius.circular(getProportionateScreenHeight(10),),
+                  borderRadius: BorderRadius.circular(
+                    getProportionateScreenHeight(10),
+                  ),
                 ),
                 child: Center(
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
-                    Icon(Icons.add,color: Colors.grey.shade600,),
-                    Text("Add Item Image",style: TextStyle(color: Colors.grey.shade600),),
-                  ],),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: Colors.grey.shade600,
+                      ),
+                      Text(
+                        "Add Item Image",
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
@@ -125,7 +135,12 @@ class _AlertItemsState extends State<AlertItems> {
     return TextFormField(
       textInputAction: textInputAction,
       decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+        ),
         hintText: text,
         hintStyle: TextStyle(),
         labelText: text,
@@ -134,8 +149,6 @@ class _AlertItemsState extends State<AlertItems> {
     );
   }
 }
-
-
 
 class AlwaysDisabledFocusNode extends FocusNode {
   @override

@@ -1,8 +1,6 @@
 import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:rentapp/views/screens/Employee/dailyexpenses/daliy_expenses.dart';
-
 import '../../../../size_config.dart';
 
 class ExpensesData extends StatefulWidget {
@@ -27,7 +25,7 @@ class _ExpensesDataState extends State<ExpensesData> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
 
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -95,11 +93,11 @@ class _ExpensesDataState extends State<ExpensesData> {
                     
                   ),
                 ),
-                dropDownMenuItems: items?.map(
+                dropDownMenuItems: items.map(
                       (e) {
                         return e;
                       },
-                    )?.toList() ??
+                    ).toList() ??
                     [],
                 dropdownBackgroundColor: Colors.white,
                 suffixIcon: Icon(

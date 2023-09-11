@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:rentapp/views/screens/Admin/addprinters/addprinter_alert.dart';
+import 'package:rentapp/views/screens/Admin/addprinters/controllers/addprinter_controller.dart';
+import 'package:rentapp/views/screens/Admin/addprinters/tab_screen/basic_detail.dart';
+import 'package:rentapp/views/screens/Admin/addprinters/tab_screen/optional_detail.dart';
 
 import '../../../../globals.dart';
 import '../../../../size_config.dart';
 import '../expense/add_expense_alert.dart';
+import 'package:get/get.dart';
 
 class AddPrinterPage extends StatefulWidget {
   const AddPrinterPage({super.key});
@@ -15,131 +19,95 @@ class AddPrinterPage extends StatefulWidget {
 }
 
 class _AddPrinterPageState extends State<AddPrinterPage> {
+  AddItemController addItemController = Get.put(AddItemController());
+
+  @override
+  void initState() {
+    getdata();
+    super.initState();
+  }
+
+  getdata() async {
+    await addItemController.getData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        child: ListView.builder(
-            padding: EdgeInsets.only(
-              top: getProportionateScreenHeight(15),
-            ),
-            itemCount: Items.length,
-            itemBuilder: (context, i) {
-              return Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: Image.network(
-                              Items[i]['image'],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      height: SizeConfig.screenHeight * 0.13,
-                      width: SizeConfig.screenWidth * 0.95,
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade200,
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(1, 1),
-                              color: Colors.black54,
-                              blurRadius: 7),
-                          BoxShadow(
-                              offset: Offset(-1, -1),
-                              color: Colors.white54,
-                              blurRadius: 7),
-                        ],
-                        borderRadius: BorderRadius.circular(
-                          getProportionateScreenHeight(10),
-                        ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: Column(
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding:  EdgeInsets.only(top: getProportionateScreenHeight(5),right: getProportionateScreenHeight(10),left: getProportionateScreenHeight(10)),
+
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      focusColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.transparent),
                       ),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(
-                                getProportionateScreenHeight(10),
-                              ),
-                              topLeft: Radius.circular(
-                                getProportionateScreenHeight(10),
-                              ),
-                            ),
-                            child: Container(
-                              height: SizeConfig.screenHeight * 0.13,
-                              width: SizeConfig.screenWidth * 0.3,
-                              color: Colors.blue,
-                              child: Image.network(
-                                Items[i]['image'],
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: getProportionateScreenWidth(15),
-                          ),
-                          SizedBox(
-                            width: SizeConfig.screenWidth * 0.32,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    Items[i]['printer_name'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                      fontSize: SizeConfig.screenHeight * 0.022,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Quantity : ${Items[i]['stock']}",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: SizeConfig.screenHeight * 0.02,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Spacer(),
-                          Text(
-                            Items[i]['price'],
-                            style: TextStyle(
-                                fontSize: SizeConfig.screenHeight * 0.025,
-                                color: Colors.black),
-                          ),
-                          SizedBox(
-                            width: getProportionateScreenWidth(15),
-                          ),
-                        ],
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Item Name",
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontSize: getProportionateScreenHeight(18),
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: getProportionateScreenHeight(10),
-                  ),
-                ],
-              );
-            }),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.add),
-        label: Text("Add Item"),
-        tooltip: "Add Item",
-        onPressed: () {
-          showDialog(context: context, builder: (context) {
-            return AlertItems();
-          },);
-        },
+                ),
+                SizedBox(height: getProportionateScreenHeight(10),),
+                // Container(
+                //   color: Colors.grey[200],
+                //   child: TabBar(
+                //     indicatorColor: Colors.blue,
+                //     tabs: [
+                //       Tab(
+                //         child: Text(
+                //           "Basic Details",
+                //           style: TextStyle(
+                //               color: Colors.grey[600], fontSize: getProportionateScreenHeight(18)),
+                //         ),
+                //       ),
+                //       Tab(
+                //         child: Text(
+                //           "Optional Details",
+                //           style: TextStyle(
+                //               color: Colors.grey[600], fontSize: getProportionateScreenHeight(18)),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+              ],
+            ),
+            Expanded(
+              flex: 14,
+              child: Container(
+                // height: MediaQuery.of(context).size.height,
+                child:  BasicDetails(),
+                // child: TabBarView(
+                //   children: [
+                //     Center(
+                //       child:,
+                //     ),
+                //     Center(
+                //       child: Optional_Details(),
+                //     ),
+                //   ],
+                // ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

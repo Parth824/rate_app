@@ -1,7 +1,9 @@
 import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:rentapp/globals.dart';
+import 'package:get/get.dart';
 import 'package:rentapp/size_config.dart';
+import 'package:rentapp/views/screens/Admin/bankaccount/controllers/bank_account_controller.dart';
 
 class Add_Bank_Account extends StatefulWidget {
   const Add_Bank_Account({super.key});
@@ -11,10 +13,10 @@ class Add_Bank_Account extends StatefulWidget {
 }
 
 class _Add_Bank_AccountState extends State<Add_Bank_Account> {
-  int? number;
-  int? amount;
+  String? name;
+  String? amount;
 
-  TextEditingController numberController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   TextEditingController amountController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -27,9 +29,9 @@ class _Add_Bank_AccountState extends State<Add_Bank_Account> {
   ];
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  DateTime? _selectedDate;
 
-  TextEditingController _textEditingController = TextEditingController();
+  BankAccountController bankAccountController =
+      Get.find<BankAccountController>();
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +59,7 @@ class _Add_Bank_AccountState extends State<Add_Bank_Account> {
                   color: Colors.white,
                   borderRadius:
                       BorderRadius.circular(SizeConfig.screenHeight * 0.03),
-                  border: Border.all(
-                    
-                  ),
+                  border: Border.all(),
                 ),
                 dropDownMenuItems: items.map((e) {
                   return e;
@@ -79,13 +79,30 @@ class _Add_Bank_AccountState extends State<Add_Bank_Account> {
                 height: getProportionateScreenHeight(10),
               ),
               buildTextFormFieldEmployeeExpense(
-                  text: "Bank Name", textInputAction: TextInputAction.next),
+                  text: "Bank Name",
+                  textInputAction: TextInputAction.next,
+                  controller: nameController,
+                  onSaved: (val) {
+                    name = val;
+                  },
+                  validator: (val) {
+                    return null;
+                  },
+                  keyboardType: TextInputType.text),
               SizedBox(
                 height: getProportionateScreenHeight(10),
               ),
               buildTextFormFieldEmployeeExpense(
-                  text: "opening Balance",
-                  textInputAction: TextInputAction.next),
+                  text: "Opening Balance",
+                  textInputAction: TextInputAction.done,
+                  controller: amountController,
+                  onSaved: (val) {
+                    amount = val;
+                  },
+                  validator: (val) {
+                    return null;
+                  },
+                  keyboardType: TextInputType.number),
             ],
           ),
         ),
@@ -101,8 +118,21 @@ class _Add_Bank_AccountState extends State<Add_Bank_Account> {
           ),
         ),
         ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
+          onPressed: () async {
+            if (formKey.currentState!.validate()) {
+              formKey.currentState!.save();
+              print(name);
+              print(dropdownvalue);
+              print(amount);
+              Map k = {
+                'bank_name':name,
+                'type':dropdownvalue,
+                'opening_price':amount,
+              };
+              await bankAccountController.InsertData(k: k);
+            }
+            // cirController.setLoding(isl: false);
+            Get.back();
           },
           child: Text(
             "Add",
@@ -113,11 +143,24 @@ class _Add_Bank_AccountState extends State<Add_Bank_Account> {
     );
   }
 
-  TextFormField buildTextFormFieldEmployeeExpense(
-      {required TextInputAction textInputAction, required String text}) {
+  TextFormField buildTextFormFieldEmployeeExpense({
+    required TextInputAction textInputAction,
+    required String text,
+    required TextEditingController controller,
+    required void Function(String?)? onSaved,
+    required String? Function(String?)? validator,
+    required TextInputType? keyboardType,
+  }) {
     return TextFormField(
+      controller: controller,
+      onSaved: onSaved,
+      validator: validator,
       textInputAction: textInputAction,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(SizeConfig.screenHeight * 0.03),
         ),

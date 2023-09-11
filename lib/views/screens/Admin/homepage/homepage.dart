@@ -5,11 +5,13 @@ import 'package:rentapp/views/screens/Admin/bankaccount/bankaccount.dart';
 import 'package:rentapp/views/screens/Admin/doctor/doctor.dart';
 import 'package:rentapp/views/screens/Admin/employee/employee.dart';
 import 'package:rentapp/views/screens/Admin/expense/expense.dart';
+import 'package:rentapp/views/screens/Admin/inventory/inventory.dart';
 import 'package:rentapp/views/screens/Admin/orderRequest/orderRequest.dart';
-import 'package:rentapp/views/screens/Admin/payments/payments.dart';
 import 'package:rentapp/views/screens/Admin/totalcomplains/totalcomplains.dart';
 import 'package:rentapp/views/screens/Admin/totalsales/totalsales.dart';
 import 'package:rentapp/views/screens/Doctor/payment_due/payment_due.dart';
+import '../../../../main.dart';
+import '../../LoginScreens/signin/sign_in_screen.dart';
 import '../dashboard/dashboard.dart';
 
 class AdminHomePage extends StatefulWidget {
@@ -44,25 +46,45 @@ class _AdminHomePageState extends State<AdminHomePage> {
     } else if (currentPage == DrawerSections.bankaccount) {
       container = BankAccountPage();
       text = "Bank Account";
-    } else if (currentPage == DrawerSections.payments) {
-      container = PaymentsPage();
-      text = "Payments";
-    } else if (currentPage == DrawerSections.addprinters) {
+    }
+    else if (currentPage == DrawerSections.inventory) {
+      container = InventoryPage();
+      text = "Inventory";
+    }
+    else if (currentPage == DrawerSections.addprinters) {
       container = AddPrinterPage();
       text = "Add Items";
-    } else if (currentPage == DrawerSections.totalsales) {
-      container = TotalSalesPage();
-      text = "Total Sales";
+    } else if (currentPage == DrawerSections.salesreport) {
+        container = SalesReportPage();
+      text = "Sales Report";
     } else if (currentPage == DrawerSections.totalcomplain) {
       container = TotalComplainsPage();
       text = "Total Complains";
-    } else if (currentPage == DrawerSections.logout) {
-      // container = TotalComplainsPage();
-      // text = "Total Complains";
     }
+    // else if (currentPage == DrawerSections.logout) {
+    //   // logout() async {
+    //   //   await sharedPreferences.setBool("isLogin", false);
+    //   //   Navigator.of(context).pushNamedAndRemoveUntil(
+    //   //       SigniInScreen.routeName, (route) => false);
+    //   // }
+    //
+    // }
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            GestureDetector(
+                onTap: () async {
+                  await sharedPreferences.setBool("isLogin", false);
+                  await sharedPreferences.setBool("isAdmin", false);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      SigniInScreen.routeName, (route) => false);
+                },
+                child: Icon(Icons.logout)),
+            SizedBox(
+              width: SizeConfig.screenWidth * 0.04,
+            ),
+          ],
           // backgroundColor: Colors.blue,
           title: Text(
             text,
@@ -96,7 +118,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                               ),
                             ),
                             Text(
-                              "email",
+                              "mohit.udservices@gmail.com",
                               style: TextStyle(
                                 color: Colors.grey[200],
                                 fontSize: getProportionateScreenHeight(14),
@@ -137,16 +159,16 @@ class _AdminHomePageState extends State<AdminHomePage> {
               currentPage == DrawerSections.expense ? true : false),
           menuItem(6, "Bank Account",
               currentPage == DrawerSections.bankaccount ? true : false),
-          menuItem(7, "Payments",
-              currentPage == DrawerSections.payments ? true : false),
+          menuItem(7, "Inventory",
+              currentPage == DrawerSections.inventory ? true : false),
           menuItem(8, "Add Items",
               currentPage == DrawerSections.addprinters ? true : false),
-          menuItem(9, "Total Sales",
-              currentPage == DrawerSections.totalsales ? true : false),
+          menuItem(9, "Sales Report",
+              currentPage == DrawerSections.salesreport ? true : false),
           menuItem(10, "Total Complains",
               currentPage == DrawerSections.totalcomplain ? true : false),
-          menuItem(11, "Logout",
-              currentPage == DrawerSections.logout ? true : false),
+          // menuItem(10, "Logout",
+          //     currentPage == DrawerSections.logout ? true : false),
         ],
       ),
     );
@@ -171,17 +193,20 @@ class _AdminHomePageState extends State<AdminHomePage> {
               currentPage = DrawerSections.expense;
             } else if (id == 6) {
               currentPage = DrawerSections.bankaccount;
-            } else if (id == 7) {
-              currentPage = DrawerSections.payments;
-            } else if (id == 8) {
+            }
+            else if (id == 7) {
+              currentPage = DrawerSections.inventory;
+            }
+            else if (id == 8) {
               currentPage = DrawerSections.addprinters;
             } else if (id == 9) {
-              currentPage = DrawerSections.totalsales;
+              currentPage = DrawerSections.salesreport;
             } else if (id == 10) {
               currentPage = DrawerSections.totalcomplain;
-            }else if (id == 11) {
-              currentPage = DrawerSections.logout;
             }
+            // else if (id == 10) {
+            //   currentPage = DrawerSections.logout;
+            // }
           });
         },
         child: Padding(
@@ -210,9 +235,9 @@ enum DrawerSections {
   orderRequest,
   expense,
   bankaccount,
-  payments,
+  inventory,
   addprinters,
-  totalsales,
+  salesreport,
   totalcomplain,
-  logout,
+  // logout,
 }

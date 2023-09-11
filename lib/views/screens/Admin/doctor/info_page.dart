@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rentapp/size_config.dart';
+import 'package:rentapp/views/screens/Admin/doctor/controllers/doctor_controller.dart';
+import 'package:get/get.dart';
 
-import '../../../../components/information_doctor.dart';
-import '../../../../components/prnding_transaction_doctor.dart';
-import '../../../../components/statement_doctor.dart';
+import 'components/information_doctor.dart';
+import 'components/prnding_transaction_doctor.dart';
+import 'components/Sales.dart';
 
 
 class Infor_Page extends StatefulWidget {
@@ -14,7 +16,12 @@ class Infor_Page extends StatefulWidget {
 }
 
 class _Infor_PageState extends State<Infor_Page>with SingleTickerProviderStateMixin {
-   late TabController tabController;
+
+  DoctorController doctorController = Get.find<DoctorController>();
+
+  var arg = Get.arguments;
+
+  late TabController tabController;
   PageController pagecontroller = PageController();
   int currentpage = 0;
   int cupertinoindex = 0;
@@ -27,11 +34,21 @@ class _Infor_PageState extends State<Infor_Page>with SingleTickerProviderStateMi
   int initialpage = 0;
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> detail =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
         SizeConfig().init(context);
     return Scaffold(
-      appBar: AppBar(title: Text(detail["hospital"]),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          arg['Hospital_Name'],
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+
       bottom: TabBar(
           indicatorWeight: 3,
           indicatorColor: Colors.white,
@@ -51,7 +68,7 @@ class _Infor_PageState extends State<Infor_Page>with SingleTickerProviderStateMi
               child: Text("Pending"),
             ),
             Tab(
-              child: Text("Statement"),
+              child: Text("Sales"),
             ),
           ],
         ),
@@ -67,7 +84,7 @@ class _Infor_PageState extends State<Infor_Page>with SingleTickerProviderStateMi
         children: [
           InformationDoctor(),
           PendingTransactionDoctor(),
-          StatementDoctor(),
+          SalesReport(),
         ],
       ),
     );

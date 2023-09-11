@@ -25,20 +25,6 @@ class _Order_PageState extends State<Order_Page> {
     AssetImage("assets/images/xray4.jpg"),
   ];
 
-  List ImageData = [
-    {
-      'title': "Inkjet Printer",
-      'images': "",
-    },
-    {'title': "Cartoon Printer", 'images': "assets/images/printer2.jpeg"},
-    {'title': "Inkjet Printer", 'images': "assets/images/printer3.jpeg"},
-    {'title': "Cartoon Printer", 'images': "assets/images/printer4.jpeg"},
-    {'title': "Inkjet Printer", 'images': "assets/images/printer5.jpeg"},
-    {'title': "Cartoon Printer", 'images': "assets/images/printer1.jpeg"},
-    {'title': "Inkjet Printer", 'images': "assets/images/printer2.jpeg"},
-    {'title': "Cartoon Printer", 'images': "assets/images/printer3.jpeg"},
-  ];
-
   final CarouselController carouselController = CarouselController();
   RentController rentController = Get.put(RentController());
   int currenIndex = 0;

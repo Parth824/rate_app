@@ -101,6 +101,7 @@ class _OrderRequestState extends State<OrderRequest> {
                 child: Row(
                   children: [
                     titleBar(index: orderRequest[index]),
+                    SizedBox(width: getProportionateScreenWidth(10),),
                     Expanded(
                       child: Container(
                         child: Column(
